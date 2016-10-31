@@ -14,22 +14,7 @@ public class earthquake_activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_earthquake_activity);
-        ArrayList<Earthquake_information> earthQuake = new ArrayList<>();
-        earthQuake.add(new Earthquake_information(7.2,"San Fransico",new Date(20160216)));
-        earthQuake.add(new Earthquake_information(7.3,"San Jose",new Date(116,03,18)));
-        earthQuake.add(new Earthquake_information(7.4,"New York",new Date(116,05,16)));
-        earthQuake.add(new Earthquake_information(7.2,"San Fransico",new Date(116,02,16)));
-        earthQuake.add(new Earthquake_information(7.3,"San Jose",new Date(116,03,18)));
-        earthQuake.add(new Earthquake_information(7.4,"New York",new Date(116,05,16)));
-        earthQuake.add(new Earthquake_information(7.2,"San Fransico",new Date(2016,02,16)));
-        earthQuake.add(new Earthquake_information(7.3,"San Jose",new Date(116,03,18)));
-        earthQuake.add(new Earthquake_information(7.4,"New York",new Date(116,05,16)));
-        earthQuake.add(new Earthquake_information(7.2,"San Fransico",new Date(2016,02,16)));
-        earthQuake.add(new Earthquake_information(7.3,"San Jose",new Date(116,03,18)));
-        earthQuake.add(new Earthquake_information(7.4,"New York",new Date(116,05,16)));
-
-
-
+        ArrayList<Earthquake_information> earthQuake = QueryUtils.extractEarthquakes();
         EarthquakeArrayAdapter adapter = new EarthquakeArrayAdapter(earthquake_activity.this,
                                                                     earthQuake);
         ListView earthquakeListView = (ListView) findViewById(R.id.list);
