@@ -45,7 +45,8 @@ public final class QueryUtils {
                 String place = properties.getString("place");
                 long time = properties.getLong("time");
                 date = new Date(time);
-                earthquakes.add(new Earthquake_information(magtitude,place,date));
+                String url = properties.getString("url");
+                earthquakes.add(new Earthquake_information(magtitude,place,date,url));
             }
         } catch ( JSONException e) {
             // If an error is thrown when executing any of the above statements in the "try" block,
