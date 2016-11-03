@@ -31,7 +31,8 @@ public final class QueryUtils {
         URL url = getURL(source);
         String jresponse = null;
         jresponse = getHttpRequest(url);
-        Log.i(LOG_TAG,jresponse);
+        //System.out.println("lllllllllllllllllllllllllllllllllllllaaaaaaaaaaaaaaaaa");
+        //Log.i(LOG_TAG,"lllllllllllllllllllllllllllllllllllllaaaaaaaaaaaaaaaaa");
         return extractEarthquakes(jresponse);
     }
     public static URL getURL(String source) {
@@ -55,8 +56,14 @@ public final class QueryUtils {
             urlConnection.setRequestMethod("GET");
             urlConnection.setReadTimeout(10000);
             urlConnection.setConnectTimeout(15000);
-            inputstream = urlConnection.getInputStream();
-            jresponse = readInputString(inputstream);
+            urlConnection.connect();
+            if(urlConnection.getResponseCode() == 200){
+                inputstream = urlConnection.getInputStream();
+                jresponse = readInputString(inputstream);
+            }
+            else{
+                Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
+            }
         } catch ( ProtocolException e ) {
             Log.e(LOG_TAG,"fail to connect",e);
         } catch ( IOException e ) {
@@ -76,7 +83,7 @@ public final class QueryUtils {
         return jresponse;
     }
     public static String readInputString(InputStream inputstream) throws IOException {
-        InputStreamReader reader = new InputStreamReader(inputstream, Charset.defaultCharset());
+        InputStreamReader reader = new InputStreamReader(inputstream, Charset.forName("UTF-8"));
         BufferedReader bufferedReader = new BufferedReader(reader);
         StringBuilder str = new StringBuilder();
         String line = bufferedReader.readLine();

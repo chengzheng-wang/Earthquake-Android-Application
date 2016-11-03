@@ -23,9 +23,6 @@ public class earthquake_activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_earthquake_activity);
-
-        earthquakeAsync task = new earthquakeAsync();
-        task.execute(SOURCE);
         adapter = new EarthquakeArrayAdapter(earthquake_activity.this, new ArrayList<Earthquake_information>());
         ListView earthquakeListView = (ListView) findViewById(R.id.list);
         earthquakeListView.setAdapter(adapter);
@@ -38,6 +35,8 @@ public class earthquake_activity extends AppCompatActivity {
                 startActivity(website);
             }
         });
+        earthquakeAsync task = new earthquakeAsync();
+        task.execute(SOURCE);
     }
     private class earthquakeAsync extends AsyncTask<String, Void, List<Earthquake_information>>{
 
@@ -46,7 +45,7 @@ public class earthquake_activity extends AppCompatActivity {
             if(params.length <= 0 || params[0] == null){
                 return null;
             }
-            ArrayList<Earthquake_information> earthQuake = QueryUtils.extractEarthquakes(params[0]);
+            ArrayList<Earthquake_information> earthQuake = QueryUtils.fetchData(params[0]);
             return earthQuake;
         }
 
