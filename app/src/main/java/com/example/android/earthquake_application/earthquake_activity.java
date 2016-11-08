@@ -53,6 +53,8 @@ public class earthquake_activity extends AppCompatActivity implements LoaderMana
     @Override
     public void onLoadFinished(Loader<List<Earthquake_information>> loader, List<Earthquake_information> data) {
         emptyTextView.setText("No Earthquake Found");
+        View loadingIndicator = findViewById(R.id.loading_indicator);
+        loadingIndicator.setVisibility(View.GONE);
         adapter.clear();
         if(data != null && !data.isEmpty()){
             adapter.addAll(data);
