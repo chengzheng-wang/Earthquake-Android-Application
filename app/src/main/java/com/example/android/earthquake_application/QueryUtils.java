@@ -31,8 +31,6 @@ public final class QueryUtils {
         URL url = getURL(source);
         String jresponse = null;
         jresponse = getHttpRequest(url);
-        //System.out.println("lllllllllllllllllllllllllllllllllllllaaaaaaaaaaaaaaaaa");
-        //Log.i(LOG_TAG,"lllllllllllllllllllllllllllllllllllllaaaaaaaaaaaaaaaaa");
         return extractEarthquakes(jresponse);
     }
     public static URL getURL(String source) {
