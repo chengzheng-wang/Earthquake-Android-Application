@@ -11,22 +11,27 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static android.R.id.empty;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 public class earthquake_activity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<List<Earthquake_information>> {
     private static final String SOURCE = " http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2016-11-01&limit=20";
     private EarthquakeArrayAdapter adapter;
+    private TextView emptyTextView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_earthquake_activity);
+        emptyTextView = (TextView)findViewById(R.id.empty_view);
         adapter = new EarthquakeArrayAdapter(earthquake_activity.this, new ArrayList<Earthquake_information>());
         ListView earthquakeListView = (ListView) findViewById(R.id.list);
+        earthquakeListView.setEmptyView(emptyTextView);
         earthquakeListView.setAdapter(adapter);
         earthquakeListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
@@ -47,6 +52,7 @@ public class earthquake_activity extends AppCompatActivity implements LoaderMana
 
     @Override
     public void onLoadFinished(Loader<List<Earthquake_information>> loader, List<Earthquake_information> data) {
+        emptyTextView.setText("No Earthquake Found");
         adapter.clear();
         if(data != null && !data.isEmpty()){
             adapter.addAll(data);
