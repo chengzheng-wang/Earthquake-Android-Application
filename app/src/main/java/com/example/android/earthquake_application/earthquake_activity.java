@@ -75,12 +75,16 @@ public class earthquake_activity extends AppCompatActivity implements LoaderMana
                 getString(R.string.settings_order_by_key),
                 getString(R.string.settings_order_by_default)
         );
+        String limit = sharedPrefs.getString(
+                "limit",
+                "20"
+        );
 
         Uri baseUri = Uri.parse(SOURCE);
         Uri.Builder uriBuilder = baseUri.buildUpon();
 
         uriBuilder.appendQueryParameter("format", "geojson");
-        uriBuilder.appendQueryParameter("limit", "10");
+        uriBuilder.appendQueryParameter("limit", limit);
         uriBuilder.appendQueryParameter("minmag", minMagnitude);
         uriBuilder.appendQueryParameter("orderby", orderBy);
 
