@@ -21,6 +21,6 @@
         android:inputType="numberDecimal"
         android:key="limit"
         android:selectAllOnFocus="true"
-        android:title="Amounts of Information" />
+        android:title="@string/settings_limit_label" />
 
 </PreferenceScreen>

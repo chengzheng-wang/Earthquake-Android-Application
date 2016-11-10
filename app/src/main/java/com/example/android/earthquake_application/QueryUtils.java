@@ -2,11 +2,9 @@ package com.example.android.earthquake_application;
 
 import android.text.TextUtils;
 import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,17 +20,26 @@ import java.util.Date;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 import static android.webkit.ConsoleMessage.MessageLevel.LOG;
 
+/**
+ * This class is a Util class for getting the JSON from USGS API. Its input is a query Url as a String
+ * and it return an ArrayList which contains objects of Earthquake_Information
+ * This class can not be "new"
+ */
 
 public final class QueryUtils {
     private static final String LOG_TAG = QueryUtils.class.getSimpleName();
     private QueryUtils() {
     }
+    /** The method fetchData is the interface provided for getting data.
+     *  The rest methods are all helper functions
+     */
     public static ArrayList<Earthquake_information> fetchData(String source){
         URL url = getURL(source);
         String jresponse = null;
         jresponse = getHttpRequest(url);
         return extractEarthquakes(jresponse);
     }
+
     public static URL getURL(String source) {
         URL url = null;
         try {
@@ -42,6 +49,7 @@ public final class QueryUtils {
         }
         return url;
     }
+
     public static String getHttpRequest(URL url){
         String jresponse = null;
         if(url == null){
@@ -80,6 +88,7 @@ public final class QueryUtils {
         }
         return jresponse;
     }
+
     public static String readInputString(InputStream inputstream) throws IOException {
         InputStreamReader reader = new InputStreamReader(inputstream, Charset.forName("UTF-8"));
         BufferedReader bufferedReader = new BufferedReader(reader);
@@ -91,6 +100,8 @@ public final class QueryUtils {
         }
         return str.toString();
     }
+
+    /* This function extract the information from a JSON response into a Earthquake_information object */
     public  static ArrayList<Earthquake_information> extractEarthquakes(String json) {
         if(TextUtils.isEmpty(json)){
             return null;
@@ -104,17 +115,16 @@ public final class QueryUtils {
             for(int i = 0; i< features.length(); i++){
                 JSONObject earthquake = features.getJSONObject(i);
                 JSONObject properties = earthquake.getJSONObject("properties");
-                double magtitude = properties.getDouble("mag");
+                double magnitude = properties.getDouble("mag");
                 String place = properties.getString("place");
                 long time = properties.getLong("time");
                 date = new Date(time);
                 String url = properties.getString("url");
-                earthquakes.add(new Earthquake_information(magtitude,place,date,url));
+                earthquakes.add(new Earthquake_information(magnitude,place,date,url));
             }
         } catch ( JSONException e) {
             Log.e("QueryUtils", "Problem parsing the earthquake JSON results", e);
         }
         return earthquakes;
     }
-
 }

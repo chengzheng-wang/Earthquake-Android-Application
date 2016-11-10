@@ -11,7 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 
 
 /**
- * Created by chengzheng on 2016/11/8.
+ * This class is targeting to finish the preference settings
+ * settings_main is a preference screen which contains a ListPreference(for order by),
+ * and two EditTextPreference (for minimum magnitude and limit information)
  */
 
 public class SettingsActivity extends AppCompatActivity {
@@ -32,10 +34,12 @@ public class SettingsActivity extends AppCompatActivity {
             Preference orderBy = findPreference(getString(R.string.settings_order_by_key));
             bindPreferenceSummaryToValue(orderBy);
 
-            Preference limit = findPreference("limit");
+            Preference limit = findPreference(getString(R.string.settings_limit_key));
             bindPreferenceSummaryToValue(limit);
         }
+
         @Override
+        /* This method is used to order the list to the preference by time or by magnitude*/
         public boolean onPreferenceChange(Preference preference, Object value) {
             String stringValue = value.toString();
             if (preference instanceof ListPreference) {
@@ -50,6 +54,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
             return true;
         }
+        /* This function is a helper function to bind preference name with the value*/
         private void bindPreferenceSummaryToValue(Preference preference) {
             preference.setOnPreferenceChangeListener(this);
             SharedPreferences preferences =

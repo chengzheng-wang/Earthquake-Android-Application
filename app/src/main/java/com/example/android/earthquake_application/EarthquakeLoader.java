@@ -6,10 +6,12 @@ import android.content.Context;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by chengzheng on 2016/11/7.
- */
 
+/**
+ * This Loader extends from AsyncTaskLoader, it receives a string as a url, and return a list of Earthquake_information,
+ * by calling the static function fetchData in class QueryUtils
+ *
+ */
 public class EarthquakeLoader extends AsyncTaskLoader<List<Earthquake_information>> {
     private static final String LOG_TAG = EarthquakeLoader.class.getName();
     private String url;
