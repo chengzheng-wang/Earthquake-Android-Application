@@ -36,6 +36,9 @@ public class SettingsActivity extends AppCompatActivity {
 
             Preference limit = findPreference(getString(R.string.settings_limit_key));
             bindPreferenceSummaryToValue(limit);
+
+            Preference radius = findPreference("max_radius");
+            bindPreferenceSummaryToValue(radius);
         }
 
         @Override
