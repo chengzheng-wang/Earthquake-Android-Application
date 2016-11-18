@@ -30,6 +30,8 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static android.R.attr.max;
 import static android.R.id.empty;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
@@ -44,6 +46,7 @@ public class earthquake_activity extends AppCompatActivity implements LoaderMana
     private String locationProvider;
     private String latitude;
     private String longitude;
+    private boolean hasGPS;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,40 +59,45 @@ public class earthquake_activity extends AppCompatActivity implements LoaderMana
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         List<String> providers = locationManager.getProviders(true);
         if (providers.contains(LocationManager.GPS_PROVIDER)) {
+            hasGPS = true;
             locationProvider = LocationManager.GPS_PROVIDER;
-        } else if (providers.contains(LocationManager.NETWORK_PROVIDER)) {
-            locationProvider = LocationManager.NETWORK_PROVIDER;
-        } else {
-            Toast.makeText(this, "No hardware to detect location", Toast.LENGTH_SHORT).show();
-            return;
         }
+//        else if (providers.contains(LocationManager.NETWORK_PROVIDER)) {
+//            hasGPS = true;
+//            locationProvider = LocationManager.NETWORK_PROVIDER;
+//        }
+        else {
+            hasGPS = false;
+        }
+        if(hasGPS){
+            LocationListener locationListener =  new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+                    showLocation(location);
+                }
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+                }
 
-        LocationListener locationListener =  new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
+                @Override
+                public void onProviderEnabled(String provider) {
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+                }
+            };
+
+            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            Location location = locationManager.getLastKnownLocation(locationProvider);
+            if(location!=null){
                 showLocation(location);
             }
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
+            locationManager.requestLocationUpdates(locationProvider, 120000, 1, (android.location.LocationListener) locationListener);
 
-            @Override
-            public void onProviderEnabled(String provider) {
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-            }
-        };
-
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
         }
-        Location location = locationManager.getLastKnownLocation(locationProvider);
-        if(location!=null){
-            showLocation(location);
-        }
-        locationManager.requestLocationUpdates(locationProvider, 120000, 1, (android.location.LocationListener) locationListener);
 
         /** set the Arrayadapter. EarthquakeArrayAdapter is a class extends Arrayadapter
         * which contains list of objects of Class Earthquake_Information
@@ -120,6 +128,9 @@ public class earthquake_activity extends AppCompatActivity implements LoaderMana
             LoaderManager loaderManager = getLoaderManager();
             loaderManager.initLoader(1,null,this);
         }else{
+            if(!hasGPS){
+                Toast.makeText(this, "No hardware to detect location", Toast.LENGTH_SHORT).show();
+            }
             emptyTextView.setText("No Internet Connection.");
             loadingIndicator.setVisibility(View.GONE);
         }
@@ -159,7 +170,7 @@ public class earthquake_activity extends AppCompatActivity implements LoaderMana
         );
         String maxradiuskm = sharedPrefs.getString(
                 "max_radius",
-                "400"
+                "0"
         );
 
         Uri baseUri = Uri.parse(SOURCE);
@@ -168,17 +179,31 @@ public class earthquake_activity extends AppCompatActivity implements LoaderMana
         uriBuilder.appendQueryParameter("limit", limit);
         uriBuilder.appendQueryParameter("minmag", minMagnitude);
         uriBuilder.appendQueryParameter("orderby", orderBy);
-        uriBuilder.appendQueryParameter("latitude", latitude);
-        uriBuilder.appendQueryParameter("longitude", longitude);
-        uriBuilder.appendQueryParameter("maxradiuskm", maxradiuskm);
+        if(!hasGPS){
+            Toast.makeText(this, "No hardware to detect location", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            if(maxradiuskm.equals("0")){
+                Toast.makeText(this, "National wide results", Toast.LENGTH_SHORT).show();
+            }
+            else{
+                Toast.makeText(this, "Your location:\n" + "Latitude" + latitude + "\nLongitude:" + longitude, Toast.LENGTH_LONG).show();
+                uriBuilder.appendQueryParameter("latitude", latitude);
+                uriBuilder.appendQueryParameter("longitude", longitude);
+                uriBuilder.appendQueryParameter("maxradiuskm", maxradiuskm);
+            }
+        }
         String newuri = uriBuilder.toString();
-        Log.i("ddddddddddddd",newuri);
+        //Log.i("ddddddddddddd",newuri);
         return new EarthquakeLoader(this, newuri);
     }
 
     @Override
     /* In onLoadFinished function, it push the data(the list) into the ArrayAdapter*/
     public void onLoadFinished(Loader<List<Earthquake_information>> loader, List<Earthquake_information> data) {
+        if(!hasGPS){
+            Toast.makeText(this, "No hardware to detect location", Toast.LENGTH_SHORT).show();
+        }
         emptyTextView.setText("No Earthquake Found.");
         loadingIndicator.setVisibility(View.GONE);
         adapter.clear();
