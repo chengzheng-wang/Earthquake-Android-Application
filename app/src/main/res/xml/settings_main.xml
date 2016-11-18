@@ -22,10 +22,10 @@
         android:key="@string/settings_limit_key"
         android:selectAllOnFocus="true"
         android:title="@string/settings_limit_label" />
-    <SwitchPreference
+    <CheckBoxPreference
         android:defaultValue="false"
         android:title="You Are the Center"
-        android:key="switch_preference_1"/>
+        android:key="switch_preference"/>
     <EditTextPreference
         android:defaultValue="400"
         android:selectAllOnFocus="true"

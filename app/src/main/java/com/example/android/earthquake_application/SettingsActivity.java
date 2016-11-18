@@ -2,12 +2,15 @@ package com.example.android.earthquake_application;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.preference.SwitchPreference;
 import android.support.v7.app.AppCompatActivity;
-
+import android.widget.CheckBox;
+import android.widget.Toast;
 
 
 /**
@@ -39,6 +42,17 @@ public class SettingsActivity extends AppCompatActivity {
 
             Preference radius = findPreference("max_radius");
             bindPreferenceSummaryToValue(radius);
+
+            CheckBoxPreference switchpre = (CheckBoxPreference) findPreference("switch_preference");
+            switchpre.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+
+                    return false;
+                }
+            });
+
+
         }
 
         @Override
